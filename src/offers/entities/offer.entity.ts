@@ -1,20 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class Offer {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  username: string;
-
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column()
-  item: TBD 
+  item: TBD;
 
   @Column()
   amount: string;
@@ -23,5 +26,5 @@ export class Offer {
   hidden: boolean;
 
   @Column()
-  user: TBD 
+  user: TBD;
 }

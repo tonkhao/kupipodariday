@@ -1,13 +1,23 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({
+    length: 64,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    length: 200,
+  })
   about: string;
 
   @Column()
@@ -16,10 +26,10 @@ export class User {
   @Column()
   email: string;
 
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt: Date;
 
   @Column()

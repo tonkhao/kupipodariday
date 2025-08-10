@@ -1,16 +1,24 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class Wish {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @CreateDateColumn()
   createdAt: Date;
 
-  @Column()
+  @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @Column({
+    length: 250,
+  })
   name: string;
 
   @Column()
@@ -28,7 +36,9 @@ export class Wish {
   @Column()
   copied: number;
 
-  @Column()
+  @Column({
+    length: 1024,
+  })
   description: string;
 
   @Column()
