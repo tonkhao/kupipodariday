@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 
+@Entity()
 export class Wishlist {
   @PrimaryGeneratedColumn()
+  @IsInt()
   id: number;
 
   @CreateDateColumn()
@@ -16,12 +19,14 @@ export class Wishlist {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({
-    length: 250,
-  })
+  @Column()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(250)
   name: string;
 
   @Column()
+  @IsString()
   image: string;
 
   @Column()

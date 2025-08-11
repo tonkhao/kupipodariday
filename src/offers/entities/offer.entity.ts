@@ -5,9 +5,12 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsInt, IsString } from 'class-validator';
 
+@Entity()
 export class Offer {
   @PrimaryGeneratedColumn()
+  @IsInt()
   id: number;
 
   @CreateDateColumn()
@@ -20,6 +23,7 @@ export class Offer {
   item: TBD;
 
   @Column()
+  @IsString()
   amount: string;
 
   @Column()

@@ -5,19 +5,23 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { IsString, MaxLength, MinLength } from 'class-validator';
 
+@Entity()
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({
-    length: 64,
-  })
+  @Column()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(64)
   username: string;
 
-  @Column({
-    length: 200,
-  })
+  @Column()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(200)
   about: string;
 
   @Column()
