@@ -4,8 +4,12 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { IsString, MaxLength, MinLength } from 'class-validator';
+import { Wish } from 'src/wishes/entities/wish.entity';
+import { Offer } from 'src/offers/entities/offer.entity';
+import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
 
 @Entity()
 export class User {
@@ -15,7 +19,7 @@ export class User {
   @Column()
   @IsString()
   @MinLength(1)
-  @MaxLength(64)
+  @MaxLength(30)
   username: string;
 
   @Column()
@@ -36,12 +40,12 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
-  wishes: TBD;
+  @OneToMany(() => Wish, (wish) => wish.owner)
+  wishes: Wish[];
 
-  @Column()
-  offers: TBD;
+  @OneToMany(() => Offer, (offer) => offer.user)
+  offers: Offer[];
 
-  @Column()
-  wishlists: TBD;
+  @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
+  wishlists: Wishlist[];
 }

@@ -4,8 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { IsInt, IsString } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Entity()
 export class Offer {
@@ -20,7 +23,7 @@ export class Offer {
   updatedAt: Date;
 
   @Column()
-  item: TBD;
+  item: Wish;
 
   @Column()
   @IsString()
@@ -29,6 +32,6 @@ export class Offer {
   @Column()
   hidden: boolean;
 
-  @Column()
-  user: TBD;
+  @ManyToOne(() => User, (user) => user.offers)
+  user: User;
 }

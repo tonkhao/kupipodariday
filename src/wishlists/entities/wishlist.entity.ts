@@ -6,6 +6,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
+import { Wish } from 'src/wishes/entities/wish.entity';
 
 @Entity()
 export class Wishlist {
@@ -30,8 +32,8 @@ export class Wishlist {
   image: string;
 
   @Column()
-  owner: TBD;
+  owner: User;
 
   @Column()
-  items: TBD;
+  items: Wish[];
 }

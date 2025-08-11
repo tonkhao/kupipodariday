@@ -4,8 +4,11 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
+import { User } from 'src/users/entities/user.entity';
+import { Offer } from 'src/offers/entities/offer.entity';
 
 @Entity()
 export class Wish {
@@ -51,9 +54,9 @@ export class Wish {
   @MaxLength(1024)
   description: string;
 
-  @Column()
-  owner: TBD;
+  @ManyToOne(() => User, (user) => user.wishes)
+  owner: User;
 
-  @Column()
-  offers: TBD;
+  @ManyToOne(() => User, (user) => user.offers)
+  offers: Offer;
 }
