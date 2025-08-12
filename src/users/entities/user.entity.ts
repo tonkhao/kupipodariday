@@ -28,7 +28,7 @@ export class User {
   @MaxLength(200)
   about: string;
 
-  @Column()
+  @Column({ default: 'https://i.pravatar.cc/300' })
   avatar: string;
 
   @Column()

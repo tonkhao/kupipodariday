@@ -1,8 +1,8 @@
-import { Controller, Post, UseGuards, Req } from '@nestjs/common';
+import { Controller, Post, Req, Body } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
-import { AuthService } from './auth.service';
-import { LocalGuard } from '../guards/local.guard';
+// import { LocalGuard } from '../guards/local.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { AuthService } from './auth.service';
 
 @Controller('auth')
 export class AuthController {
@@ -11,9 +11,9 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @UseGuards(LocalGuard)
+  //   @UseGuards(LocalGuard)
   @Post('signin')
-  signin(@Req req) {
+  signin(@Req() req) {
     /* Генерируем для пользователя JWT-токен */
     return this.authService.auth(req.user);
   }
