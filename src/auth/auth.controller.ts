@@ -19,8 +19,9 @@ export class AuthController {
   //   @UseGuards(LocalGuard)
   @Post('signin')
   signin(@Req() req: AuthReq) {
-    /* Генерируем для пользователя JWT-токен */
-    return this.authService.validatePassword({
+    // console.log('req');
+    // console.log(req);
+    return this.authService.auth({
       id: req.user.userId,
       username: req.user.username,
     });

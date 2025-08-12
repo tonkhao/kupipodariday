@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 
@@ -16,19 +16,24 @@ export class UsersService {
     return this.userRepository.save(createUserDto);
   }
 
-  async findOne(id: string) {
-    const user = await this.userRepository.findOne(id);
+  async findOne(filter: FindOptionsWhere<User>) {
+    const user = await this.userRepository.findOne({
+      where: filter,
+    });
 
     return user;
   }
 
-  async findByUsername(username: string) {
-    const user = await this.userRepository.findOne({ username });
+  async findByUsername(filter: FindOptionsWhere<User>) {
+    const user = await this.userRepository.findOne({ where: filter });
 
     return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(filter: FindOptionsWhere<User>, updateUserDto: UpdateUserDto) {
+    const user = await this.userRepository.findOne({ where: filter });
+    if (!user) return null;
+    Object.assign(user, updateUserDto);
+    return this.userRepository.save(user);
   }
 }
