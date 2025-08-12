@@ -48,4 +48,7 @@ export class User {
 
   @OneToMany(() => Wishlist, (wishlist) => wishlist.owner)
   wishlists: Wishlist[];
+
+  @Column()
+  password: string;
 }

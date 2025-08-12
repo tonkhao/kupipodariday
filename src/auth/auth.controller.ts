@@ -3,6 +3,11 @@ import { UsersService } from '../users/users.service';
 // import { LocalGuard } from '../guards/local.guard';
 import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
+import { RequestUser } from './jwt.strategy';
+
+export interface AuthReq extends Request {
+  user: RequestUser;
+}
 
 @Controller('auth')
 export class AuthController {
@@ -13,15 +18,17 @@ export class AuthController {
 
   //   @UseGuards(LocalGuard)
   @Post('signin')
-  signin(@Req() req) {
+  signin(@Req() req: AuthReq) {
     /* Генерируем для пользователя JWT-токен */
-    return this.authService.auth(req.user);
+    return this.authService.validatePassword({
+      id: req.user.userId,
+      username: req.user.username,
+    });
   }
 
   @Post('signup')
-  signup(@Body() createUserDto: CreateUserDto) {
-    /* При регистрации создаём пользователя и генерируем для него токен */
-    const user = this.usersService.create(createUserDto);
+  async signup(@Body() createUserDto: CreateUserDto) {
+    const user = await this.usersService.create(createUserDto);
 
     return this.authService.auth(user);
   }
