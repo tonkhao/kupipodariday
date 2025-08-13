@@ -1,7 +1,6 @@
-import { Controller, Post, Body, Patch, Param, Get, Req } from '@nestjs/common';
+import { Controller, Post, Body, Get, Req } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
 import { FindOptionsWhere } from 'typeorm';
 import { User } from './entities/user.entity';
 import { AuthReq } from 'src/auth/auth.controller';
