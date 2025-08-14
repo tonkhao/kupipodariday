@@ -9,7 +9,7 @@ export interface AuthReq extends Request {
   user: RequestUser;
 }
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(
     private usersService: UsersService,
@@ -19,8 +19,8 @@ export class AuthController {
   //   @UseGuards(LocalGuard)
   @Post('signin')
   signin(@Req() req: AuthReq) {
-    // console.log('req');
-    // console.log(req);
+    console.log('req');
+    console.log(req);
     return this.authService.auth({
       id: req.user.userId,
       username: req.user.username,
@@ -29,6 +29,8 @@ export class AuthController {
 
   @Post('signup')
   async signup(@Body() createUserDto: CreateUserDto) {
+    console.log('signup');
+    console.log(createUserDto);
     const user = await this.usersService.create(createUserDto);
 
     return this.authService.auth(user);
