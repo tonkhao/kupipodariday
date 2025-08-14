@@ -4,6 +4,8 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  ManyToMany,
 } from 'typeorm';
 import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
@@ -31,9 +33,9 @@ export class Wishlist {
   @IsString()
   image: string;
 
-  @Column()
+  @ManyToOne(() => User, (user) => user.wishlists)
   owner: User;
 
-  @Column()
+  @ManyToMany(() => Wish)
   items: Wish[];
 }

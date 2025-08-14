@@ -22,7 +22,7 @@ export class Offer {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column()
+  @ManyToOne(() => Wish, (wish) => wish.offers)
   item: Wish;
 
   @Column()
