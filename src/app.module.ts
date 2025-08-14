@@ -5,9 +5,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { Offer } from './offers/entities/offer.entity';
 import { User } from './users/entities/user.entity';
-// import { WishesModule } from './wishes/wishes.module';
-// import { WishlistsModule } from './wishlists/wishlists.module';
-// import { OffersModule } from './offers/offers.module';
+import { Wish } from './wishes/entities/wish.entity';
+import { Wishlist } from './wishlists/entities/wishlist.entity';
+import { WishesModule } from './wishes/wishes.module';
+import { WishlistsModule } from './wishlists/wishlists.module';
+import { OffersModule } from './offers/offers.module';
 
 @Module({
   imports: [
@@ -18,13 +20,13 @@ import { User } from './users/entities/user.entity';
       username: 'student',
       password: '',
       database: 'kupipodariday',
-      entities: [User, Offer],
+      entities: [User, Offer, Wish, Wishlist],
       synchronize: true,
     }),
     UsersModule,
-    // WishesModule,
-    // WishlistsModule,
-    // OffersModule,
+    WishesModule,
+    WishlistsModule,
+    OffersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
