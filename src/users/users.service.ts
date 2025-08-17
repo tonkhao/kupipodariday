@@ -12,8 +12,9 @@ export class UsersService {
     private userRepository: Repository<User>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return this.userRepository.save(createUserDto);
+  async create(createUserDto: CreateUserDto) {
+    const user = this.userRepository.create(createUserDto);
+    return this.userRepository.save(user);
   }
 
   async findOne(filter: FindOptionsWhere<User>) {
