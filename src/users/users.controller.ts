@@ -1,12 +1,33 @@
-import { Controller, Post, Body, Get, Req, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Req,
+  UseGuards,
+  Patch,
+  ConflictException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { AuthReq } from 'src/auth/auth.controller';
 import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { hasCodeProperty } from 'src/auth/auth.service';
+import { HashService } from 'src/hash/hash.service';
 
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly hashService: HashService,
+  ) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Post('find')
+  findMany(@Body() query: string) {
+    return this.usersService.findMany(query);
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
@@ -23,5 +44,29 @@ export class UsersController {
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('me/')
+  async updateMe(@Body() updateUserDto: UpdateUserDto, @Req() req: AuthReq) {
+    const user = await this.usersService.findOne({
+      id: Number(req.user.userId),
+    });
+    const updatedUser = { user, ...updateUserDto };
+    try {
+      return await this.usersService.updateOne(
+        {
+          id: Number(req.user.userId),
+        },
+        updatedUser,
+      );
+    } catch (e) {
+      if (hasCodeProperty(e) && e.code === '23505') {
+        throw new ConflictException(
+          'Пользователь с таким email или username уже зарегистрирован',
+        );
+      }
+      throw e instanceof Error ? e : new Error(String(e));
+    }
   }
 }

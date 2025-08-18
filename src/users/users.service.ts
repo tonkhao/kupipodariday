@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 
@@ -33,6 +33,25 @@ export class UsersService {
     });
 
     return user;
+  }
+
+  async updateOne(
+    filter: FindOptionsWhere<User>,
+    dto: UpdateUserDto,
+  ): Promise<User | null> {
+    const user = await this.userRepository.findOne({ where: filter });
+    if (!user) return null;
+    Object.assign(user, dto);
+    return this.userRepository.save(user);
+  }
+
+  findMany(query: string): Promise<User[]> {
+    return this.userRepository.find({
+      where: [
+        { username: ILike(`%${query}%`) },
+        { email: ILike(`%${query}%`) },
+      ],
+    });
   }
 
   async findByUsername(filter: FindOptionsWhere<User>) {
