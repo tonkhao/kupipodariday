@@ -20,6 +20,7 @@ export class UsersService {
   async getWishesByUserId(userId: number) {
     const user = await this.userRepository.findOne({
       where: { id: userId },
+      relations: ['wishes'],
     });
     console.log('USER WISHES');
     console.log(user);
