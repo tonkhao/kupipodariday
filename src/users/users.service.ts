@@ -45,13 +45,14 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  findMany(query: string): Promise<User[]> {
-    return this.userRepository.find({
+  async findMany(query: string): Promise<User[]> {
+    const result = await this.userRepository.find({
       where: [
         { username: ILike(`%${query}%`) },
         { email: ILike(`%${query}%`) },
       ],
     });
+    return result || [];
   }
 
   async findByUsername(filter: FindOptionsWhere<User>) {

@@ -25,7 +25,7 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Post('find')
-  findMany(@Body() query: string) {
+  findMany(@Body('query') query: string) {
     return this.usersService.findMany(query);
   }
 
