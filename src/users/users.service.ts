@@ -17,6 +17,15 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
+  async getWishesByUserId(userId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+    });
+    console.log('USER WISHES');
+    console.log(user);
+    return user?.wishes ?? [];
+  }
+
   async findOne(filter: FindOptionsWhere<User>) {
     const user = await this.userRepository.findOne({
       where: filter,

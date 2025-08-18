@@ -14,6 +14,12 @@ export class UsersController {
     return this.usersService.findOne({ id: Number(req.user.userId) });
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('me/wishes')
+  async getMyWishes(@Req() req: AuthReq) {
+    return this.usersService.getWishesByUserId(Number(req.user.userId));
+  }
+
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
