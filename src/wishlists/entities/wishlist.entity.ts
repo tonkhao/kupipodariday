@@ -38,10 +38,6 @@ export class Wishlist {
   owner: User;
 
   @ManyToMany(() => Wish)
-  @JoinTable({
-    name: 'wishlist_items',
-    joinColumn: { name: 'wishlist_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'wish_id', referencedColumnName: 'id' },
-  })
+  @JoinTable()
   items: Wish[];
 }
