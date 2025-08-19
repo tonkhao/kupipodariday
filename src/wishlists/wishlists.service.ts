@@ -1,4 +1,4 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -74,7 +74,7 @@ export class WishlistsService {
     updateWishlistDto: UpdateWishlistDto,
   ): Promise<Wishlist | null> {
     const wishlist = await this.findById(id);
-    if (!wishlist) return null;
+    if (!wishlist) throw new NotFoundException('Не найден обновляемый элемент');
     if (updateWishlistDto.itemsId) {
       wishlist.items = updateWishlistDto.itemsId.length
         ? await this.wishRepository.findBy({
@@ -92,7 +92,7 @@ export class WishlistsService {
 
   async removeOne(id: number): Promise<Wishlist | null> {
     const wishlist = await this.findById(id);
-    if (!wishlist) return null;
+    if (!wishlist) throw new NotFoundException('Не найден удаляемый элемент');
     await this.whishlistRepository.remove(wishlist);
     return wishlist;
   }

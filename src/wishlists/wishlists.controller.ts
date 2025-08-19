@@ -45,8 +45,6 @@ export class WishlistsController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findById(@Param('id') id: number) {
-    console.log('id');
-    console.log(id);
     return this.wishlistsService.findById(+id);
   }
 

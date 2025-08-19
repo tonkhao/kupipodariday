@@ -55,7 +55,6 @@ export class UsersService {
 
   async findByUsername(filter: FindOptionsWhere<User>) {
     const user = await this.userRepository.findOne({ where: filter });
-
     return user;
   }
 
