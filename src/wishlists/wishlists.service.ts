@@ -44,6 +44,8 @@ export class WishlistsService {
   }
 
   findAll(filter: WishlistFilter): Promise<Wishlist[]> {
+    console.log('FILTER');
+    console.log(filter);
     const where: FindOptionsWhere<Wishlist> = {
       ...(typeof filter.id === 'number' ? { id: filter.id } : {}),
       ...(typeof filter.name === 'string' ? { name: filter.name } : {}),

@@ -35,7 +35,7 @@ export class WishesService {
   async findOneById(id: number, userId?: number): Promise<Wish> {
     const wish = await this.wishRepository.findOne({
       where: { id },
-      relations: ['owner', 'offers', 'offers.user'],
+      relations: ['owner'],
     });
     if (!wish) throw new NotFoundException('Wish not found');
     return wish;
