@@ -32,7 +32,7 @@ export class WishesService {
     return this.wishRepository.save(wish);
   }
 
-  async findOneById(id: number, userId?: number): Promise<Wish> {
+  async findOneById(id: number): Promise<Wish> {
     const wish = await this.wishRepository.findOne({
       where: { id },
       relations: ['owner'],
@@ -43,20 +43,20 @@ export class WishesService {
 
   async updateProtectedWish(
     id: number,
-    dto: UpdateWishDto,
+    updateWishDto: UpdateWishDto,
     userId: number,
   ): Promise<Wish> {
     const wish = await this.findOneById(id);
     if (wish.owner.id !== userId)
       throw new ForbiddenException('Можно редактировать только свои желания!');
 
-    if ('price' in dto && wish.offers && wish.offers.length > 0) {
+    if ('price' in updateWishDto && wish.offers && wish.offers.length > 0) {
       throw new BadRequestException(
         'Нельзя менять стоимость, уже есть желающие!',
       );
     }
-    if ('raised' in dto) delete dto.raised;
-    Object.assign(wish, dto);
+    if ('raised' in updateWishDto) delete updateWishDto.raised;
+    Object.assign(wish, updateWishDto);
     return this.wishRepository.save(wish);
   }
 
@@ -68,7 +68,7 @@ export class WishesService {
     return wish;
   }
 
-  async getLast(): Promise<Wish[]> {
+  getLast(): Promise<Wish[]> {
     return this.wishRepository.find({
       order: { createdAt: 'DESC' },
       take: 40,
@@ -76,7 +76,7 @@ export class WishesService {
     });
   }
 
-  async getTop(): Promise<Wish[]> {
+  getTop(): Promise<Wish[]> {
     return this.wishRepository.find({
       order: { copied: 'DESC' },
       take: 20,
@@ -85,7 +85,7 @@ export class WishesService {
   }
 
   async copyWish(id: number, userId: number): Promise<Wish> {
-    const original = await this.findOneById(id, userId);
+    const original = await this.findOneById(id);
     const user = await this.userRepository.findOneBy({ id: userId });
     if (!user) throw new NotFoundException('User not found');
 
