@@ -25,23 +25,50 @@ export class WishesController {
     return this.wishesService.create(createWishDto, Number(req.user.userId));
   }
 
-  @Get()
-  findAll() {
-    return this.wishesService.findAll();
+  @Get('last')
+  getLast() {
+    return this.wishesService.getLast();
   }
 
+  @Get('top')
+  getTop() {
+    return this.wishesService.getTop();
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.wishesService.findOne(+id);
+  getOne(@Param('id') id: string, @Req() req: MaybeAuthRequest) {
+    const wishId = Number(id);
+    const viewerId = req.user?.userId;
+    return this.wishesService.findOneById(wishId, viewerId);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateWishDto: UpdateWishDto) {
-    return this.wishesService.update(+id, updateWishDto);
+  update(
+    @Param('id') id: string,
+    @Body() dto: UpdateWishDto,
+    @Req() req: AuthReq,
+  ) {
+    const wishId = Number(id);
+    return this.wishesService.updateProtectedWish(
+      wishId,
+      dto,
+      Number(req.user.userId),
+    );
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.wishesService.remove(+id);
+  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const wishId = Number(id);
+    return this.wishesService.removeProtectedWish(wishId, Number(req.user.userId));
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post(':id/copy')
+  copy(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+    const wishId = Number(id);
+    return this.wishesService.copyWish(wishId, Number(req.user.userId));
   }
 }
