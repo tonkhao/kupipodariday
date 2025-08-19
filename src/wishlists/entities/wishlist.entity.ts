@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
   ManyToOne,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 import { IsInt, IsString, MaxLength, MinLength } from 'class-validator';
 import { User } from 'src/users/entities/user.entity';
@@ -29,9 +30,6 @@ export class Wishlist {
   @MaxLength(250)
   name: string;
 
-  @IsString()
-  description: string;
-
   @Column()
   @IsString()
   image: string;
@@ -40,5 +38,10 @@ export class Wishlist {
   owner: User;
 
   @ManyToMany(() => Wish)
+  @JoinTable({
+    name: 'wishlist_items',
+    joinColumn: { name: 'wishlist_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'wish_id', referencedColumnName: 'id' },
+  })
   items: Wish[];
 }
