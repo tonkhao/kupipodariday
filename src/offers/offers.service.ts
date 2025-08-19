@@ -15,15 +15,15 @@ import { Offer } from './entities/offer.entity';
 export class OffersService {
   constructor(
     @InjectRepository(Offer)
-    private offersRepo: Repository<Offer>,
+    private offersRepository: Repository<Offer>,
     @InjectRepository(Wish)
-    private wishesRepo: Repository<Wish>,
+    private wishesRepository: Repository<Wish>,
     @InjectRepository(User)
-    private usersRepo: Repository<User>,
+    private usersRepository: Repository<User>,
   ) {}
 
   async create(dto: CreateOfferDto, userId: number): Promise<Offer> {
-    const wish = await this.wishesRepo.findOne({
+    const wish = await this.wishesRepository.findOne({
       where: { id: dto.itemId },
       relations: ['owner'],
     });
@@ -43,10 +43,10 @@ export class OffersService {
       );
     }
 
-    const user = await this.usersRepo.findOneBy({ id: userId });
+    const user = await this.usersRepository.findOneBy({ id: userId });
     if (!user) throw new BadRequestException('Пользователь не найден');
 
-    const offer = this.offersRepo.create({
+    const offer = this.offersRepository.create({
       amount: dto.amount,
       hidden: dto.hidden ?? false,
       item: wish,
@@ -54,9 +54,9 @@ export class OffersService {
     });
 
     wish.raised = +(raised + dto.amount).toFixed(2);
-    await this.wishesRepo.save(wish);
+    await this.wishesRepository.save(wish);
 
-    return this.offersRepo.save(offer);
+    return this.offersRepository.save(offer);
   }
 
   async find(filter: OfferFilter = {}): Promise<Offer | Offer[] | null> {
@@ -66,7 +66,7 @@ export class OffersService {
       filter.itemId === undefined &&
       filter.hidden === undefined
     ) {
-      return this.offersRepo.findOne({
+      return this.offersRepository.findOne({
         where: { id: filter.id },
         relations: ['item', 'user'],
       });
@@ -83,6 +83,6 @@ export class OffersService {
         : {}),
     };
 
-    return this.offersRepo.find({ where, relations: ['item', 'user'] });
+    return this.offersRepository.find({ where, relations: ['item', 'user'] });
   }
 }
