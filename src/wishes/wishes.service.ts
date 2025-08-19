@@ -91,7 +91,6 @@ export class WishesService {
 
     original.copied += 1;
     await this.wishRepository.save(original);
-
     const copy = this.wishRepository.create({
       name: original.name,
       link: original.link,
@@ -100,6 +99,7 @@ export class WishesService {
       description: original.description,
       owner: user,
       raised: 0,
+      copied: 0,
     });
     return this.wishRepository.save(copy);
   }
