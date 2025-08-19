@@ -1,4 +1,4 @@
-import { Get, Injectable, Query, UseGuards } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,12 @@ import { FindOptionsWhere, In, Repository } from 'typeorm';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { Wishlist } from './entities/wishlist.entity';
 import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
+
+export type WishlistFilter = {
+  id?: number;
+  name?: string;
+  ownerId?: number;
+};
 
 @Injectable()
 export class WishlistsService {
@@ -24,8 +30,8 @@ export class WishlistsService {
     const owner = await this.userRepository.findOneBy({ id: ownerId });
     if (!owner) throw new Error('Владелец не найден');
 
-    const items = createWishlistDto.itemIds?.length
-      ? await this.wishRepository.findBy({ id: In(createWishlistDto.itemIds) })
+    const items = createWishlistDto.itemsId?.length
+      ? await this.wishRepository.findBy({ id: In(createWishlistDto.itemsId) })
       : [];
 
     const wishlist = this.whishlistRepository.create({
@@ -37,7 +43,7 @@ export class WishlistsService {
     return this.whishlistRepository.save(wishlist);
   }
 
-  findAll(filter): Promise<Wishlist[]> {
+  findAll(filter: WishlistFilter): Promise<Wishlist[]> {
     const where: FindOptionsWhere<Wishlist> = {
       ...(typeof filter.id === 'number' ? { id: filter.id } : {}),
       ...(typeof filter.name === 'string' ? { name: filter.name } : {}),
@@ -65,21 +71,23 @@ export class WishlistsService {
 
   async updateOne(
     id: number,
-    dto: UpdateWishlistDto,
+    updateWishlistDto: UpdateWishlistDto,
   ): Promise<Wishlist | null> {
     const wishlist = await this.findById(id);
     if (!wishlist) return null;
-    if (dto.itemIds) {
-      wishlist.items = dto.itemIds.length
-        ? await this.wishRepository.findBy({ id: In(dto.itemIds) })
+    if (updateWishlistDto.itemsId) {
+      wishlist.items = updateWishlistDto.itemsId.length
+        ? await this.wishRepository.findBy({
+            id: In(updateWishlistDto.itemsId),
+          })
         : [];
     }
-    Object.assign(wishlist, {
-      name: dto.name ?? wishlist.name,
-      description: dto.description ?? wishlist.description,
-      image: dto.image ?? wishlist.image,
-    });
-    return this.whishlistRepository.save(wishlist);
+    const updatedWhishlist = {
+      ...wishlist,
+      name: updateWishlistDto.name ?? wishlist.name,
+      image: updateWishlistDto.image ?? wishlist.image,
+    };
+    return this.whishlistRepository.save(updatedWhishlist);
   }
 
   async removeOne(id: number): Promise<Wishlist | null> {

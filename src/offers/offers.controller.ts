@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, Req, UseGuards } from '@nestjs/common';
-import { OffersService } from './offers.service';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import { OfferFilter, OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
 import { AuthReq } from 'src/auth/auth.controller';
 

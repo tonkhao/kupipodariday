@@ -27,7 +27,7 @@ export class Offer {
 
   @Column()
   @IsString()
-  amount: string;
+  amount: number;
 
   @Column()
   hidden: boolean;

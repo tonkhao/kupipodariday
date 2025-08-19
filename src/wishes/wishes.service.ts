@@ -32,16 +32,12 @@ export class WishesService {
     return this.wishRepository.save(wish);
   }
 
-  async findOneById(id: number, viewerId?: number): Promise<Wish> {
+  async findOneById(id: number, userId?: number): Promise<Wish> {
     const wish = await this.wishRepository.findOne({
       where: { id },
       relations: ['owner', 'offers', 'offers.user'],
     });
     if (!wish) throw new NotFoundException('Wish not found');
-
-    if (!viewerId || wish.owner.id !== viewerId) {
-      wish.offers = (wish.offers ?? []).filter((o) => !o.hidden);
-    }
     return wish;
   }
 

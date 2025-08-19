@@ -37,7 +37,7 @@ export class WishesController {
 
   @UseGuards(JwtAuthGuard)
   @Get(':id')
-  getOne(@Param('id') id: string, @Req() req: MaybeAuthRequest) {
+  getOne(@Param('id') id: string, @Req() req: AuthReq) {
     const wishId = Number(id);
     const viewerId = req.user?.userId;
     return this.wishesService.findOneById(wishId, viewerId);
@@ -60,14 +60,17 @@ export class WishesController {
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  remove(@Param('id') id: string, @Req() req: AuthReq) {
     const wishId = Number(id);
-    return this.wishesService.removeProtectedWish(wishId, Number(req.user.userId));
+    return this.wishesService.removeProtectedWish(
+      wishId,
+      Number(req.user.userId),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Post(':id/copy')
-  copy(@Param('id') id: string, @Req() req: AuthenticatedRequest) {
+  copy(@Param('id') id: string, @Req() req: AuthReq) {
     const wishId = Number(id);
     return this.wishesService.copyWish(wishId, Number(req.user.userId));
   }

@@ -22,8 +22,6 @@ export class UsersService {
       where: { id: userId },
       relations: ['wishes'],
     });
-    console.log('USER WISHES');
-    console.log(user);
     return user?.wishes ?? [];
   }
 

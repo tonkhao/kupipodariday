@@ -1,18 +1,35 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, Query, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Req,
+  Query,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { WishlistsService } from './wishlists.service';
 import { CreateWishlistDto } from './dto/create-wishlist.dto';
 import { UpdateWishlistDto } from './dto/update-wishlist.dto';
 import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
 import { AuthReq } from 'src/auth/auth.controller';
 
-@Controller('wishlists')
+@Controller('wishlistlists')
 export class WishlistsController {
   constructor(private readonly wishlistsService: WishlistsService) {}
 
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() createWishlistDto: CreateWishlistDto, @Req() req: AuthReq) {
-    return this.wishlistsService.create(createWishlistDto, Number(req.user.userId));
+    console.log('CONTROLLER');
+    return this.wishlistsService.create(
+      createWishlistDto,
+      Number(req.user.userId),
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -29,6 +46,8 @@ export class WishlistsController {
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   findById(@Param('id') id: number) {
+    console.log('id');
+    console.log(id);
     return this.wishlistsService.findById(+id);
   }
 

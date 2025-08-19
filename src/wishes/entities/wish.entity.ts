@@ -58,5 +58,5 @@ export class Wish {
   owner: User;
 
   @ManyToOne(() => User, (user) => user.offers)
-  offers: Offer;
+  offers: Offer[];
 }

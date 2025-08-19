@@ -4,12 +4,18 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { Offer } from './entities/offer.entity';
+
+export type OfferFilter = {
+  id?: number;
+  userId?: number;
+  itemId?: number;
+  hidden?: boolean;
+};
 
 @Injectable()
 export class OffersService {
@@ -22,9 +28,9 @@ export class OffersService {
     private usersRepository: Repository<User>,
   ) {}
 
-  async create(dto: CreateOfferDto, userId: number): Promise<Offer> {
+  async create(createOfferDto: CreateOfferDto, userId: number): Promise<Offer> {
     const wish = await this.wishesRepository.findOne({
-      where: { id: dto.itemId },
+      where: { id: createOfferDto.itemId },
       relations: ['owner'],
     });
     if (!wish) throw new BadRequestException('Подарок не найден');
@@ -37,7 +43,7 @@ export class OffersService {
       throw new BadRequestException('На подарок уже собрана нужная сумма');
 
     const available = +(price - raised).toFixed(2);
-    if (dto.amount > available) {
+    if (createOfferDto.amount > available) {
       throw new BadRequestException(
         `Сумма превышает остаток до цели. Доступно: ${available}`,
       );
@@ -47,19 +53,19 @@ export class OffersService {
     if (!user) throw new BadRequestException('Пользователь не найден');
 
     const offer = this.offersRepository.create({
-      amount: dto.amount,
-      hidden: dto.hidden ?? false,
+      amount: createOfferDto.amount,
+      hidden: createOfferDto.hidden ?? false,
       item: wish,
       user,
     });
 
-    wish.raised = +(raised + dto.amount).toFixed(2);
+    wish.raised = +(raised + createOfferDto.amount).toFixed(2);
     await this.wishesRepository.save(wish);
 
     return this.offersRepository.save(offer);
   }
 
-  async find(filter: OfferFilter = {}): Promise<Offer | Offer[] | null> {
+  async find(filter: OfferFilter): Promise<Offer | Offer[] | null> {
     if (
       typeof filter.id === 'number' &&
       filter.userId === undefined &&

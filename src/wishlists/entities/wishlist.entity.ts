@@ -29,6 +29,9 @@ export class Wishlist {
   @MaxLength(250)
   name: string;
 
+  @IsString()
+  description: string;
+
   @Column()
   @IsString()
   image: string;
