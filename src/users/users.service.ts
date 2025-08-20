@@ -64,4 +64,21 @@ export class UsersService {
     Object.assign(user, updateUserDto);
     return this.userRepository.save(user);
   }
+
+  async getWishesByUsername(username: string) {
+    const user = await this.userRepository.findOne({
+      where: { username },
+      relations: [
+        'wishes',
+        'wishes.owner',
+        'wishes.offers',
+        'wishes.offers.user',
+      ],
+    });
+    if (!user) return [];
+    user.wishes.forEach((wish) => {
+      wish.offers = wish.offers.filter((offer) => !offer.hidden);
+    });
+    return user.wishes;
+  }
 }

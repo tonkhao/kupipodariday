@@ -7,6 +7,7 @@ import {
   UseGuards,
   Patch,
   ConflictException,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -15,6 +16,7 @@ import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hasCodeProperty } from 'src/auth/auth.service';
 import { HashService } from 'src/hash/hash.service';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -68,5 +70,23 @@ export class UsersController {
       }
       throw e instanceof Error ? e : new Error(String(e));
     }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':username')
+  async getUserByUsername(@Param('username') username: string) {
+    const user = await this.usersService.findOne({ username });
+    if (user) {
+      const secureUserData: Partial<User> = { ...user };
+      delete secureUserData.password;
+      return secureUserData;
+    }
+    return null;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get(':username/wishes')
+  getUserWishes(@Param('username') username: string) {
+    return this.usersService.getWishesByUsername(username);
   }
 }
