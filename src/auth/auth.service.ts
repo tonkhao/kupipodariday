@@ -3,7 +3,6 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import { HashService } from 'src/hash/hash.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { use } from 'passport';
 
 //TODO: tongkhao: как взять свойства из существующего класса?
 interface UserAuth {
