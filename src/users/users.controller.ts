@@ -34,7 +34,15 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   async getMe(@Req() req: AuthReq) {
-    return this.usersService.findOne({ id: Number(req.user.userId) });
+    const user = await this.usersService.findOne({
+      id: Number(req.user.userId),
+    });
+    if (user) {
+      const secureUserData: Partial<User> = { ...user };
+      delete secureUserData.password;
+      return secureUserData;
+    }
+    return null;
   }
 
   @UseGuards(JwtAuthGuard)
@@ -56,12 +64,19 @@ export class UsersController {
     });
     const updatedUser = { user, ...updateUserDto };
     try {
-      return await this.usersService.updateOne(
+      const serviceReturn = await this.usersService.updateOne(
         {
           id: Number(req.user.userId),
         },
         updatedUser,
       );
+      const secureUserData: Partial<User> = {
+        ...serviceReturn,
+      };
+      delete secureUserData.password;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      delete (secureUserData as any).user;
+      return secureUserData;
     } catch (e) {
       if (hasCodeProperty(e) && e.code === '23505') {
         throw new ConflictException(

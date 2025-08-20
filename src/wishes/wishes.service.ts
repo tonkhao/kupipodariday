@@ -71,8 +71,8 @@ export class WishesService {
     return wish;
   }
 
-  getLast(): Promise<Wish[]> {
-    return this.wishRepository.find({
+  async getLast(): Promise<Wish[]> {
+    return await this.wishRepository.find({
       order: { createdAt: 'DESC' },
       take: 40,
       relations: ['owner'],
