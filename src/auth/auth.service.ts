@@ -25,7 +25,13 @@ export class AuthService {
 
   async validatePassword(username: string, password: string) {
     const user = await this.usersService.findOne({ username });
-    if (user && (await this.hashService.compare(password, user.password))) {
+    const userPassword =
+      (await this.usersService.findPassword({ username })) || '';
+    const userWithPassword = { ...user, ...{ password: userPassword } };
+    if (
+      user &&
+      (await this.hashService.compare(password, userWithPassword.password))
+    ) {
       return { userId: user.id, username: user.username };
     }
 

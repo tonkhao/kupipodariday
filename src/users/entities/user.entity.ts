@@ -10,7 +10,6 @@ import { IsString, MaxLength, MinLength } from 'class-validator';
 import { Wish } from 'src/wishes/entities/wish.entity';
 import { Offer } from 'src/offers/entities/offer.entity';
 import { Wishlist } from 'src/wishlists/entities/wishlist.entity';
-import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {

@@ -16,7 +16,6 @@ import { JwtAuthGuard } from 'src/auth/jwtAuth.guard';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hasCodeProperty } from 'src/auth/auth.service';
 import { HashService } from 'src/hash/hash.service';
-import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UsersController {
@@ -38,9 +37,7 @@ export class UsersController {
       id: Number(req.user.userId),
     });
     if (user) {
-      const secureUserData: Partial<User> = { ...user };
-      delete secureUserData.password;
-      return secureUserData;
+      return user;
     }
     return null;
   }
@@ -64,19 +61,12 @@ export class UsersController {
     });
     const updatedUser = { user, ...updateUserDto };
     try {
-      const serviceReturn = await this.usersService.updateOne(
+      return await this.usersService.updateOne(
         {
           id: Number(req.user.userId),
         },
         updatedUser,
       );
-      const secureUserData: Partial<User> = {
-        ...serviceReturn,
-      };
-      delete secureUserData.password;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      delete (secureUserData as any).user;
-      return secureUserData;
     } catch (e) {
       if (hasCodeProperty(e) && e.code === '23505') {
         throw new ConflictException(
@@ -92,9 +82,7 @@ export class UsersController {
   async getUserByUsername(@Param('username') username: string) {
     const user = await this.usersService.findOne({ username });
     if (user) {
-      const secureUserData: Partial<User> = { ...user };
-      delete secureUserData.password;
-      return secureUserData;
+      return user;
     }
     return null;
   }
@@ -105,3 +93,5 @@ export class UsersController {
     return this.usersService.getWishesByUsername(username);
   }
 }
+
+!!!

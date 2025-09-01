@@ -33,6 +33,16 @@ export class UsersService {
     return user;
   }
 
+  async findPassword(filter: FindOptionsWhere<User>) {
+    const user = await this.userRepository.findOne({
+      where: filter,
+      select: { password: true, id: false },
+    });
+    console.log(user);
+
+    return user?.password;
+  }
+
   async updateOne(
     filter: FindOptionsWhere<User>,
     dto: UpdateUserDto,
